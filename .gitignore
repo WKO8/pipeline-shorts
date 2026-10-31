@@ -1,0 +1,111 @@
+# ==============================================================================
+# Security & Sensitive Infrastructure
+# ==============================================================================
+# Infrastructure, private topologies & deployments
+.plans/
+deploy/
+deployments/
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+
+# Security scanners, audits & reports
+gitleaks*
+zap*
+nuclei*
+*.sarif
+*.gitleaks.json
+
+# Credentials, secrets, tokens & environment files
+client_secret*.json
+token*.json
+*.secret
+*.secrets
+.env
+.env.*
+!.env.example
+.env*.local
+
+# Docker local overrides
+docker-compose.override.yml
+docker-compose*.local.yml
+docker-compose.local.yml
+
+# ==============================================================================
+# Node / Frontend
+# ==============================================================================
+node_modules/
+web/node_modules/
+.next/
+web/.next/
+out/
+web/out/
+*.map
+.turbo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==============================================================================
+# Caches, Temporary Files & Dumps
+# ==============================================================================
+tmp/
+temp/
+log.txt
+*.log
+logs/
+*.dump
+*.sql
+*.sqlite3
+0:a
+
+# ==============================================================================
+# Python & Virtual Environments
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+*.pt
+.venv/
+.venv-*/
+venv/
+ENV/
+.pytest_cache/
+
+# ==============================================================================
+# Project Specific & Local Data
+# ==============================================================================
+data/
+bin/
+gfpgan/
+assets/
+
+# ==============================================================================
+# IDEs & Operating Systems
+# ==============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

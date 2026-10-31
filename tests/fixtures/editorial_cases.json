@@ -1,0 +1,13 @@
+{
+  "source": "data/transcripts/davy-jones-igor-3k-free.transcript.json",
+  "annotation": "Agent annotations from the supplied transcript, not independent human ratings. Same episode; exploratory regression set.",
+  "cases": [
+    {"id":"pragmata_complete","split":"development","title":"Por que Pragmata vendeu bem","parts":[[1932,1948]],"acceptable":true,"rationale":"Names Capcom and Pragmata, asks why it sold, supplies quality and trust reasons and explicit outcome."},
+    {"id":"pragmata_missing_answer","split":"development","title":"Por que Pragmata vendeu bem","parts":[[1932,1939]],"acceptable":false,"rationale":"Stops after asking why it sold, before the reasons at 1940–1946."},
+    {"id":"pokemon_complete","split":"development","title":"As compras de Pokémon no Japão","parts":[[2403,2444]],"acceptable":true,"rationale":"Identifies the store, purchases, missing Scyther merchandise and how he obtained the plush."},
+    {"id":"unrelated_answer","split":"development","title":"Por que Pragmata vendeu bem","parts":[[1932,1939],[2403,2444]],"acceptable":false,"rationale":"Pokémon purchases do not answer the Pragmata sales question."},
+    {"id":"nintendo_costs","split":"holdout","title":"O custo dos jogos da Nintendo","parts":[[1862,1873]],"acceptable":true,"rationale":"Complete short argument comparing development costs; evaluates editorial coherence, independently of export minimum duration."},
+    {"id":"gta_unfinished_condition","split":"holdout","title":"O dinheiro do GTA Online","parts":[[559,603]],"acceptable":false,"rationale":"Ends with an unfinished conditional about GTA 6 commercial success."},
+    {"id":"online_exception_removed","split":"holdout","title":"Parei de jogar online","parts":[[1776,1791],[1797,1797]],"original_parts":[[1776,1797]],"acceptable":false,"rationale":"Removes the explicit exception about still playing Warzone at 1793–1795."}
+  ]
+}

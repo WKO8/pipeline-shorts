@@ -1,0 +1,36 @@
+# ==============================================================================
+# Gitleaks Configuration
+# ==============================================================================
+title = "Gitleaks Configuration for pipeline-shorts"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Global allowlist for local artifacts, weights, virtual environments, node modules, temporary files, local environment files and sample configurations"
+paths = [
+    '''(?i)(^|/)data/''',
+    '''(?i)(^|/)\.venv/''',
+    '''(?i)(^|/)venv/''',
+    '''(?i)(^|/)tmp/''',
+    '''(?i)(^|/)temp/''',
+    '''(?i)(^|/)assets/''',
+    '''(?i)(^|/)gfpgan/''',
+    '''(?i)(^|/)bin/''',
+    '''(?i)(^|/)node_modules/''',
+    '''(?i)(^|/)web/node_modules/''',
+    '''(?i)(^|/)\.next/''',
+    '''(?i)(^|/)web/\.next/''',
+    '''(?i)(^|/)\.git/''',
+    '''(?i)(^|/)\.plans/''',
+    '''(?i)(^|/)deploy/''',
+    '''(?i)(^|/)\.env$''',
+    '''(?i)(^|/)\.env\..*''',
+    '''(?i)\.env\.example$''',
+    '''(?i)(^|/)log\.txt$''',
+    '''(?i)\.log$''',
+    '''(?i)\.pt$''',
+    '''(?i)\.onnx$''',
+    '''(?i)pnpm-lock\.yaml$''',
+    '''(?i)package-lock\.json$'''
+]

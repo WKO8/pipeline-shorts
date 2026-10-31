@@ -1,0 +1,36 @@
+== BLOCO A ==
+
+Vertical 9:16 smartphone-style video. A 78-year-old Brazilian grandmother with short gray hair, round glasses, pearl earrings, mustard-yellow cardigan over a floral blouse, sitting in a worn floral armchair in a cozy 1990s Brazilian kitchen with yellow tiles, a pot on the stove and a rooster-shaped wall clock. She looks straight into the camera with a sarcastic, expressive face, realistic skin, subtle handheld feel, warm kitchen lighting. Her voice is raspy, firm and dry, clear diction, moderate pace, Brazilian Portuguese. No subtitles, no on-screen text, no watermark.
+
+== Acao ==
+
+[BLOCO A] [ACAO]
+
+== Frame inicial ==
+
+Use a mesma Vó Zu da folha de personagem. Ela está sentada numa poltrona florida desgastada em uma cozinha brasileira dos anos 90, com azulejos amarelos, uma panela no fogão e um relógio em formato de galo na parede. [CENA]. Enquadramento de vídeo vertical de celular, luz quente de cozinha, fotorrealista. Sem texto. Formato 9:16.
+
+== Thumbnail ==
+
+Use a mesma Vó Zu da folha de personagem. Close do rosto e dos ombros, ocupando 70% do quadro, fundo de cozinha amarela desfocado, expressão: [EXPRESSAO]. Deixe a parte de baixo livre para o texto. Fotorrealista. Sem texto. Formato 9:16.
+
+== Referencias ==
+
+References:
+Character: [@Vó Zulmira]
+Voice: [@Vó Zulmira]
+Character Sheet: [@vo-sem-filtro-character-sheet-2.png]
+Initial Frame: [@initial-frame-vX.png]
+
+== Descricao ==
+
+[LEGENDA]
+Manda teu caso aqui que a vó responde no próximo vídeo 👇
+🤖 Vó criada com IA
+[SET]
+
+== Hashtags ==
+
+- A1 (relacionamento): #conselhodavovo #vosemfiltro #relacionamento #humorbrasileiro #ia
+- A2 (família e trabalho): #conselhodavovo #vosemfiltro #familia #humor #ia
+- A3 (nostalgia, saúde, vizinha): #conselhodavovo #vosemfiltro #nostalgia #humor #ia

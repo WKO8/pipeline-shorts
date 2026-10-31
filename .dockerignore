@@ -1,0 +1,36 @@
+# Virtual environment & Python cache
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git & repository metadata
+.git/
+.gitignore
+.gitleaks.toml
+
+# Node / Next.js web build artifacts
+web/node_modules/
+web/.next/
+web/.turbo/
+
+# Application runtime data & outputs
+data/
+tmp/
+*.mp4
+*.mov
+*.wav
+*.mp3
+*.log
+log.txt
+
+# Large binaries & pre-trained weights (can be mounted or downloaded)
+bin/
+gfpgan/
+
+# Environment files
+.env
+.env.local

@@ -1,0 +1,23 @@
+services:
+  pipeline-shorts:
+    build: .
+    container_name: pipeline-shorts
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./data:/app/data
+      - ./assets:/app/assets:ro
+      - ./.env:/app/.env:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

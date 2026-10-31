@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pipeline Shorts UI</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="shell">
+    
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🎬</div>
+        <div class="logo-text">Pipeline<span>Shorts</span></div>
+      </div>
+      
+      <div class="sidebar-nav">
+        <div class="nav-section-label">Pipeline</div>
+        <div class="nav-item active" data-panel="run">
+          <span class="nav-icon">▶</span> Nova Execução
+        </div>
+        <div class="nav-item" data-panel="virality"><span class="nav-icon">🎯</span> Auditoria Viral</div>
+        <div class="nav-item" data-panel="vertical"><span class="nav-icon">📱</span> Vídeos Verticais</div>
+        <div class="nav-item" data-panel="vsf"><span class="nav-icon">👵</span> Produção Vó Sem Filtro</div>
+        <div class="nav-item" data-panel="rerender">
+          <span class="nav-icon">🔁</span> Re-Render
+        </div>
+        <div class="nav-item" data-panel="audio-dl">
+          <span class="nav-icon">🎵</span> Download Áudio
+        </div>
+        <div class="nav-item" data-panel="upscale">
+          <span class="nav-icon">🔍</span> Upscaling
+        </div>
+        <div class="nav-item" data-panel="converter">
+          <span class="nav-icon">🔄</span> Conversor
+        </div>
+
+        <div class="nav-section-label">Legendas</div>
+        <div class="nav-item" data-panel="subtitles">
+          <span class="nav-icon">📝</span> Editor de Legendas
+        </div>
+        <div class="nav-item" data-panel="captions">
+          <span class="nav-icon">🖋️</span> Estilo & Design
+        </div>
+
+        <div class="nav-section-label">Sistema</div>
+        <div class="nav-item" data-panel="config">
+          <span class="nav-icon">⚙️</span> Configurações
+        </div>
+        <div class="nav-item" data-panel="explorer">
+          <span class="nav-icon">📁</span> Explorador
+        </div>
+      </div>
+
+      <div class="sidebar-status">
+        <div class="status-pill">
+          <div class="status-dot done" id="global-status-dot"></div>
+          <span id="global-status-text">Pronto</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN AREA -->
+    <main id="main">
+      <header id="topbar">
+        <h1 id="topbar-title">Nova Execução</h1>
+      </header>
+      
+      <div id="content">
+        
+        <!-- PANEL: VIRALITY AUDITOR -->
+        <div class="panel" id="panel-vsf" style="padding:0">
+          <iframe src="/vsf-produce" title="Produção Vó Sem Filtro"
+                  style="width:100%; height:calc(100vh - 56px); border:0; background:#0f1117;"></iframe>
+        </div>
+        <div class="panel" id="panel-virality">
+          <div class="section-header">
+            <div>
+              <h2>🎯 Auditoria de Viralidade (TikTok &amp; YouTube Shorts)</h2>
+              <p>Diagnóstico de retenção, ganchos nos primeiros 3s, ritmo de cortes e psicologia do espectador com IA Estrategista Sênior.</p>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-virality-channels-modal">🔑 Conectar Contas &amp; Guia TikTok</button>
+          </div>
+
+          <!-- AUDIT FORM -->
+          <form id="virality-form">
+            <div class="card">
+              <div class="card-title"><span>🎬</span> Origem do Vídeo para Auditoria</div>
+              <div class="seg-group" id="virality-source-tabs" style="margin-bottom:16px;">
+                <button type="button" class="seg-btn active" data-src-tab="upload">📤 Enviar Vídeo Editado</button>
+                <button type="button" class="seg-btn" data-src-tab="url">🔗 Link (Shorts / TikTok)</button>
+                <button type="button" class="seg-btn" data-src-tab="channels">📱 Meus Vídeos Conectados</button>
+              </div>
+
+              <!-- Tab: Upload -->
+              <div id="vtab-upload" class="vtab-content">
+                <div class="field">
+                  <label for="virality-file-input">Selecione ou arraste o arquivo de vídeo pronto (.mp4, .mov, .webm até 2 GiB):</label>
+                  <input type="file" id="virality-file-input" class="inp" accept=".mp4,.mov,.mkv,.webm,.m4v">
+                  <div id="virality-file-info" style="margin-top:8px; font-size:13px; color:var(--text-muted); display:none;"></div>
+                </div>
+              </div>
+
+              <!-- Tab: URL -->
+              <div id="vtab-url" class="vtab-content" style="display:none;">
+                <div class="field">
+                  <label for="virality-url-input">Cole o link público do YouTube Shorts ou TikTok:</label>
+                  <input type="url" id="virality-url-input" class="inp" placeholder="https://www.youtube.com/shorts/... ou https://www.tiktok.com/@user/video/...">
+                </div>
+              </div>
+
+              <!-- Tab: Channels -->
+              <div id="vtab-channels" class="vtab-content" style="display:none;">
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+                  <select id="virality-channel-platform" class="inp" style="width:180px;">
+                    <option value="youtube">YouTube Shorts</option>
+                    <option value="tiktok">TikTok</option>
+                  </select>
+                  <input type="text" id="virality-channel-query" class="inp" placeholder="Canal ID (YouTube) ou @username (TikTok)..." style="flex:1;">
+                  <button type="button" class="btn btn-secondary" id="btn-fetch-channel-videos">Carregar Vídeos</button>
+                </div>
+                <div id="virality-channel-videos-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px; max-height:260px; overflow-y:auto;">
+                  <small style="color:var(--text-muted);">Clique em 'Carregar Vídeos' para buscar conteúdos postados.</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Strategic Context Card -->
+            <div class="card">
+              <div class="card-title"><span>🧠</span> Contexto Estratégico &amp; IA</div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="virality-niche">Nicho do Conteúdo</label>
+                  <select id="virality-niche" class="inp">
+                    <option value="Podcast / Cortes">Podcast / Cortes de Entrevista</option>
+                    <option value="Educação / Tech">Educação / Tecnologia / Dicas</option>
+                    <option value="Finanças / Negócios">Finanças / Negócios / Investimentos</option>
+                    <option value="Humor / Entretenimento">Humor / Memes / Entretenimento</option>
+                    <option value="Histórias / Curiosidades">Histórias / Curiosidades / Fatos</option>
+                    <option value="Fitness / Saúde">Fitness / Saúde / Lifestyle</option>
+                    <option value="Vlog / Cotidiano">Vlog / Conteúdo Pessoal</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="virality-audience">Público-Alvo</label>
+                  <input type="text" id="virality-audience" class="inp" value="Jovens e Jovens Adultos (18-35 anos)" placeholder="Ex: Desenvolvedores, Jovens 18-24...">
+                </div>
+
+                <div class="field">
+                  <label for="virality-account-size">Tamanho da Conta</label>
+                  <select id="virality-account-size" class="inp">
+                    <option value="pequena">Pequena (&lt; 10k seguidores) • Foco: Passar no pool frio de 500 views</option>
+                    <option value="media">Média (10k a 100k) • Foco: Compartilhamentos &amp; Expansão FYP</option>
+                    <option value="grande">Grande (&gt; 100k) • Foco: Viralidade Massiva &amp; Comentários</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="virality-provider">Provedor de IA Estrategista</label>
+                  <select id="virality-provider" class="inp">
+                    <option value="auto">Automático (DeepSeek 4.1-Flash / Gemini 3.8)</option>
+                    <option value="deepseek">DeepSeek 4.1-Flash (Raciocínio &amp; Psicologia)</option>
+                    <option value="gemini">Google Gemini 3.8 Flash (Visão Multimodal)</option>
+                    <option value="ollama">Ollama Local (Sem Custo de API)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+                <button type="submit" class="btn btn-primary btn-lg" id="btn-start-virality-audit" style="min-width:240px;">
+                  🚀 Iniciar Auditoria com Estrategista IA
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- PROGRESS CARD -->
+          <div class="card" id="virality-progress-card" style="display:none;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+              <div class="status-dot running" style="animation:pulse 1s infinite;"></div>
+              <h3 id="virality-progress-title" style="margin:0;">Processando Vídeo...</h3>
+            </div>
+            <p id="virality-progress-desc" style="color:var(--text-muted); margin-bottom:16px;">Extraindo dados técnicos audiovisuais...</p>
+            <div style="width:100%; height:8px; background:var(--bg-card-subtle, #2a2a2a); border-radius:4px; overflow:hidden;">
+              <div id="virality-progress-bar" style="width:25%; height:100%; background:var(--accent, #6366f1); transition:width 0.4s ease;"></div>
+            </div>
+          </div>
+
+          <!-- RESULTS DASHBOARD -->
+          <div id="virality-results-container" style="display:none; margin-top:24px;">
+            <!-- Score & Top Diagnosis Banner -->
+            <div class="card" style="background:linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%); border-left: 5px solid #6366f1;">
+              <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:20px;">
+                <div>
+                  <div style="font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); font-weight:600;">Diagnóstico Geral de Viralidade</div>
+                  <h1 id="res-virality-verdict" style="margin:4px 0 8px 0; font-size:28px;">Calculando...</h1>
+                  <p id="res-virality-summary" style="margin:0; color:var(--text-muted); max-width:650px; font-size:14px;"></p>
+                </div>
+                <div style="display:flex; align-items:center; gap:20px;">
+                  <div style="text-align:center;">
+                    <div id="res-virality-score-circle" style="width:96px; height:96px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; border:6px solid #10b981; background:rgba(0,0,0,0.3); font-weight:bold;">
+                      <span id="res-virality-score-val" style="font-size:32px; line-height:1;">85</span>
+                      <small style="font-size:10px; color:var(--text-muted);">/ 100</small>
+                    </div>
+                    <div style="font-size:11px; margin-top:6px; color:var(--text-muted); font-weight:600;">VIRALITY SCORE</div>
+                  </div>
+                  <div style="text-align:center;">
+                    <div id="res-hook-score-circle" style="width:80px; height:80px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; border:5px solid #6366f1; background:rgba(0,0,0,0.3); font-weight:bold;">
+                      <span id="res-hook-score-val" style="font-size:26px; line-height:1;">90</span>
+                      <small style="font-size:10px; color:var(--text-muted);">/ 100</small>
+                    </div>
+                    <div style="font-size:11px; margin-top:6px; color:var(--text-muted); font-weight:600;">HOOK SCORE (0-3s)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- HOOK STUDIO: 0-3 Seconds -->
+            <div class="card">
+              <div class="card-title"><span>🎣</span> Hook Studio: Análise Psicológica dos Primeiros 3 Segundos</div>
+              <p style="color:var(--text-muted); font-size:13px; margin-top:-6px; margin-bottom:16px;">
+                50% a 70% dos abandonos acontecem antes do 3º segundo. Aqui está a autópsia exata da abertura do seu vídeo:
+              </p>
+
+              <!-- Frames Carousel / Strip -->
+              <div style="margin-bottom:20px;">
+                <label style="font-size:12px; font-weight:600; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:8px;">Quadros Capturados (0s a 3s):</label>
+                <div id="res-hook-frames-strip" style="display:flex; gap:12px; overflow-x:auto; padding-bottom:8px;">
+                  <!-- Injetado dinamicamente -->
+                </div>
+              </div>
+
+              <div class="form-grid" style="grid-template-columns:1fr 1fr; gap:20px;">
+                <div>
+                  <h4 style="color:#e2e8f0; margin-bottom:8px;">Avaliação do Gancho Inicial:</h4>
+                  <p id="res-hook-assessment" style="background:rgba(255,255,255,0.03); padding:14px; border-radius:8px; line-height:1.6; font-size:14px; border-left:3px solid #6366f1;"></p>
+
+                  <h4 style="color:#e2e8f0; margin-top:16px; margin-bottom:8px;">Crítica Visual &amp; Enquadramento:</h4>
+                  <p id="res-hook-visual-critique" style="background:rgba(255,255,255,0.03); padding:14px; border-radius:8px; line-height:1.6; font-size:14px; border-left:3px solid #06b6d4;"></p>
+                </div>
+
+                <div>
+                  <div style="background:linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(245, 158, 11, 0.08) 100%); border:1px solid rgba(239, 68, 68, 0.3); border-radius:10px; padding:18px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                      <span style="font-weight:700; color:#f87171; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">🔥 Reescrita Agressiva do Gancho (Hook Rewrite)</span>
+                      <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-hook-rewrite">📋 Copiar Gancho</button>
+                    </div>
+                    <p id="res-hook-rewrite" style="font-size:16px; font-weight:500; color:#fef08a; line-height:1.5; font-style:italic; margin:0;"></p>
+                    <small style="color:var(--text-muted); display:block; margin-top:12px; font-size:12px;">
+                      💡 <strong>Dica do Estrategista:</strong> Substitua a fala dos primeiros 2 segundos por esta versão para dobrar a taxa de espectadores que continuam assistindo.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PACING & RETENTION RISKS TIMELINE -->
+            <div class="card">
+              <div class="card-title"><span>⏱️</span> Ritmo (Pacing) &amp; Mapa de Riscos de Abandono (Drop-off Risks)</div>
+              
+              <div style="display:flex; flex-wrap:wrap; gap:16px; margin-bottom:20px; align-items:center;">
+                <div style="background:rgba(255,255,255,0.04); padding:12px 18px; border-radius:8px;">
+                  <span style="font-size:12px; color:var(--text-muted); display:block;">Veredito de Ritmo:</span>
+                  <span id="res-pacing-verdict" style="font-size:18px; font-weight:700; color:#38bdf8;">Adequado</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.04); padding:12px 18px; border-radius:8px;">
+                  <span style="font-size:12px; color:var(--text-muted); display:block;">Intervalo Médio de Cortes:</span>
+                  <span id="res-cut-interval" style="font-size:18px; font-weight:700; color:#fbbf24;">2.8s</span>
+                  <small style="color:var(--text-muted); font-size:11px;"> (Ideal: 2.0s a 3.5s)</small>
+                </div>
+                <div style="background:rgba(255,255,255,0.04); padding:12px 18px; border-radius:8px;">
+                  <span style="font-size:12px; color:var(--text-muted); display:block;">Total de Tomadas / Cortes:</span>
+                  <span id="res-cut-count" style="font-size:18px; font-weight:700; color:#a78bfa;">14</span>
+                </div>
+              </div>
+
+              <!-- Interactive Video Player with Timeline Markers -->
+              <div style="display:grid; grid-template-columns:320px 1fr; gap:20px; align-items:start;">
+                <div>
+                  <video id="virality-video-preview" controls style="width:100%; border-radius:10px; background:#000; box-shadow:0 4px 12px rgba(0,0,0,0.5);"></video>
+                </div>
+                <div>
+                  <h4 style="margin-top:0; color:#e2e8f0;">Pontos de Risco Detectados (Clique para ir ao segundo exato):</h4>
+                  <div id="res-dropoff-list" style="display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto;">
+                    <!-- Injetado dinamicamente -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ACTIONABLE FIXES & CTA -->
+            <div class="form-grid" style="grid-template-columns:1fr 1fr; gap:20px;">
+              <div class="card">
+                <div class="card-title"><span>🛠️</span> Checklist de Correções Práticas para Reeditar</div>
+                <p style="color:var(--text-muted); font-size:13px; margin-top:-6px; margin-bottom:12px;">Marque os itens ao fazer os ajustes no seu editor (Premiere, CapCut, DaVinci):</p>
+                <div id="res-actionable-fixes" style="display:flex; flex-direction:column; gap:10px;">
+                  <!-- Injetado dinamicamente -->
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title"><span>📣</span> Avaliação da Call to Action (Fechamento)</div>
+                <p style="color:var(--text-muted); font-size:13px; margin-top:-6px; margin-bottom:12px;">Análise do loop de repetição e gatilhos de engajamento:</p>
+                <div id="res-cta-eval" style="background:rgba(255,255,255,0.03); padding:16px; border-radius:8px; line-height:1.6; font-size:14px; border-left:3px solid #10b981;"></div>
+              </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:20px;">
+              <button type="button" class="btn btn-secondary" id="btn-export-audit-json">📥 Baixar Relatório (JSON)</button>
+              <button type="button" class="btn btn-primary" id="btn-new-audit">🔄 Nova Auditoria</button>
+            </div>
+          </div>
+
+          <!-- MODAL: YOUTUBE & TIKTOK API SETUP GUIDE -->
+          <div id="virality-credentials-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+            <div style="background:#1e1e24; border:1px solid #3f3f46; border-radius:12px; width:90%; max-width:680px; max-height:85vh; overflow-y:auto; padding:24px; box-shadow:0 12px 36px rgba(0,0,0,0.7);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #27272a; padding-bottom:12px;">
+                <h2 style="margin:0; font-size:20px;">🔑 Conexão de Plataformas &amp; Guia TikTok API</h2>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-close-credentials-modal">✕</button>
+              </div>
+
+              <div style="margin-bottom:20px;">
+                <h3 style="color:#6366f1; margin-bottom:8px;">📱 Passo a Passo para Obter o TikTok API (Sua Conta)</h3>
+                <ol style="line-height:1.7; padding-left:20px; font-size:14px; color:#d4d4d8;">
+                  <li>Acesse o portal oficial: <a href="https://developers.tiktok.com/" target="_blank" style="color:#38bdf8; text-decoration:underline;">TikTok for Developers</a> e faça login com a conta do seu TikTok.</li>
+                  <li>No menu superior, vá em <strong>"Manage apps"</strong> e clique no botão <strong>"Create an app"</strong>.</li>
+                  <li>Dê um nome para seu app (ex: <code>Pipeline Shorts Analyzer</code>) e selecione a categoria.</li>
+                  <li>Na aba <strong>"Products"</strong>, adicione:
+                    <ul style="margin:4px 0 8px 0;">
+                      <li><strong>Login Kit:</strong> Dá acesso ao fluxo de autenticação e leitura de dados.</li>
+                    </ul>
+                  </li>
+                  <li>Na seção <strong>"Add Scopes"</strong> (Permissões de Acesso), marque:
+                    <ul style="margin:4px 0 8px 0;">
+                      <li><code>user.info.profile</code>: Acesso ao link público, bio e verificação da conta.</li>
+                      <li><code>user.info.stats</code>: Dados estatísticos de likes, contagem de seguidores e vídeos.</li>
+                      <li><code>video.list</code>: Leitura dos vídeos públicos postados no canal.</li>
+                    </ul>
+                  </li>
+                  <li>Em <strong>"Redirect URI"</strong>, adicione: <code>http://localhost:7860/api/virality/tiktok/callback</code> (e para seu domínio: <code>https://app.exemplo.com/api/virality/tiktok/callback</code>).</li>
+                  <li>Copie o <strong>Client Key</strong> e o <strong>Client Secret</strong> gerados e adicione no arquivo <code>.env</code>:
+                    <pre style="background:#111; padding:8px 12px; border-radius:6px; margin:6px 0; font-size:12px; color:#a5f3fc;">TIKTOK_CLIENT_KEY=seu_client_key
+TIKTOK_CLIENT_SECRET=seu_client_secret</pre>
+                  </li>
+                  <li><strong>Modo Ágil sem esperar aprovação:</strong> Você já pode usar a aba "Link" ou "Meus Vídeos Conectados" digitando apenas seu <code>@username</code> — o sistema puxa os vídeos automaticamente via extrator nativo!</li>
+                </ol>
+              </div>
+
+              <div style="margin-bottom:20px; border-top:1px solid #27272a; padding-top:16px;">
+                <h3 style="color:#ef4444; margin-bottom:8px;">▶️ YouTube Data &amp; Analytics API</h3>
+                <p style="font-size:14px; color:#d4d4d8; line-height:1.6;">
+                  Adicione sua chave ou credenciais OAuth no arquivo <code>.env</code>:
+                </p>
+                <pre style="background:#111; padding:8px 12px; border-radius:6px; font-size:12px; color:#a5f3fc;">YOUTUBE_API_KEY=sua_api_key_do_google_cloud
+YOUTUBE_CLIENT_ID=seu_client_id.apps.googleusercontent.com
+YOUTUBE_CLIENT_SECRET=seu_client_secret</pre>
+              </div>
+
+              <div style="text-align:right;">
+                <button type="button" class="btn btn-primary" id="btn-done-credentials-modal">Entendi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-vertical">
+          <div class="section-header">
+            <div>
+              <h2>Vídeos Verticais & Legendas</h2>
+              <p>Adicione legendas dinâmicas nos seus Shorts/Reels ou remixe vídeos com gameplay e layouts split.</p>
+            </div>
+          </div>
+
+          <!-- Mode Selector -->
+          <div class="seg-group" id="vertical-mode-group" role="group" aria-label="Modo de Operação" style="margin-bottom: 20px;">
+            <button class="seg-btn active" id="vertical-mode-subsonly" type="button" data-vmode="subtitles_only">
+              <span class="seg-icon">💬</span>
+              <span class="seg-label">Somente Adicionar Legendas</span>
+              <span class="seg-desc">Mantém o vídeo original e queima legendas</span>
+            </button>
+            <button class="seg-btn" id="vertical-mode-remix" type="button" data-vmode="remix">
+              <span class="seg-icon">✂️</span>
+              <span class="seg-label">Remix com Layout & Vídeo Secundário</span>
+              <span class="seg-desc">Tela dividida, gameplay e reaction</span>
+            </button>
+          </div>
+
+          <form id="vertical-form">
+            <!-- Card: Origem do Vídeo Base -->
+            <div class="card">
+              <div class="card-title">🎬 Vídeo Base</div>
+              <p>Envie o vídeo do seu computador ou informe um link do YouTube, TikTok ou Instagram.</p>
+              
+              <div class="form-grid" style="margin-bottom: 12px;">
+                <div class="field">
+                  <label for="vertical-base-type">Tipo de Origem</label>
+                  <select id="vertical-base-type" class="inp">
+                    <option value="upload">Upload de Arquivo (MP4, MOV, MKV, WebM)</option>
+                    <option value="url">URL da Rede Social (YouTube / TikTok)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="vertical-base-upload-section">
+                <div class="field">
+                  <label for="vertical-base-file">Selecionar arquivo de vídeo</label>
+                  <input type="file" id="vertical-base-file" accept=".mp4,.mov,.mkv,.webm,.m4v" class="inp">
+                  <small id="vertical-base-upload-status" style="color:var(--text3); margin-top:4px; display:block;"></small>
+                </div>
+              </div>
+
+              <div id="vertical-base-url-section" style="display:none;">
+                <div class="field">
+                  <label for="vertical-url">URL do Vídeo</label>
+                  <input type="url" id="vertical-url" class="inp" placeholder="https://www.youtube.com/shorts/… ou TikTok">
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Layout e Vídeo Complementar (apenas no modo Remix) -->
+            <div class="card" id="vertical-remix-card" style="display:none;">
+              <div class="card-title">🎮 Vídeo Complementar & Composição</div>
+              <p>Adicione gameplays, reações ou loops para ocupar a segunda metade do layout.</p>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="vertical-source">Origem do Vídeo Secundário</label>
+                  <select id="vertical-source" class="inp">
+                    <option value="none">Nenhum</option>
+                    <option value="preset">Galeria local (assets/vertical/)</option>
+                    <option value="upload">Upload de arquivo</option>
+                    <option value="url">URL secundária</option>
+                  </select>
+                </div>
+                <div class="field" id="vertical-preset-field" hidden>
+                  <label for="vertical-preset">Preset local</label>
+                  <select id="vertical-preset" class="inp"></select>
+                </div>
+                <div class="field" id="vertical-upload-field" hidden>
+                  <label for="vertical-upload">Arquivo complementar (até 2 GiB)</label>
+                  <input type="file" id="vertical-upload" accept=".mp4,.mov,.mkv,.webm,.m4v" class="inp">
+                </div>
+                <div class="field" id="vertical-secondary-field" hidden>
+                  <label for="vertical-secondary">URL secundária</label>
+                  <input type="url" id="vertical-secondary" class="inp">
+                </div>
+                <div class="field">
+                  <label for="vertical-layout">Layout</label>
+                  <select id="vertical-layout" class="inp">
+                    <option value="full_screen">Tela cheia</option>
+                    <option value="split_vertical_top_bottom">Base em cima / complementar embaixo</option>
+                    <option value="split_side_by_side">Lado a lado</option>
+                    <option value="pip_overlay">Picture-in-Picture</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label><input type="checkbox" id="vertical-invert"> Inverter ordem no split</label>
+                </div>
+                <div class="field">
+                  <label for="vertical-volume">Volume secundário: <output id="vertical-volume-value">0</output>%</label>
+                  <input type="range" min="0" max="100" value="0" id="vertical-volume">
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Configurações Gerais de Render -->
+            <div class="card">
+              <div class="card-title">⚙️ Opções do Vídeo</div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="vertical-fps">FPS de Saída</label>
+                  <select id="vertical-fps" class="inp">
+                    <option value="30">30 FPS</option>
+                    <option value="60">60 FPS</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label><input type="checkbox" id="vertical-silence"> Remover silêncios e pausas longas</label>
+                  <small>Corta silêncios abaixo de −30 dB por mais de 0,4s mantendo sincronia.</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Posicionamento & Preview da Legenda -->
+            <div class="card">
+              <div class="card-title">💬 Posicionamento & Estilo da Legenda</div>
+              <p>O visual segue as cores, fonte e contorno definidos na aba <a href="#" id="link-goto-style" style="color:var(--accent); text-decoration:underline;">🖋️ Estilo & Design</a>.</p>
+              
+              <div class="form-grid" style="margin-bottom:16px;">
+                <div class="field">
+                  <label><input type="checkbox" id="vertical-captions" checked> Gerar legendas sincronizadas (Whisper)</label>
+                </div>
+                <div class="field">
+                  <label><input type="checkbox" id="vertical-safe" checked> Respeitar zonas de segurança do TikTok/Shorts</label>
+                  <small>Mantém as palavras longe dos botões à direita e da barra inferior.</small>
+                </div>
+              </div>
+
+              <!-- Preview e Controle de Altura -->
+              <div class="vertical-preview-container">
+                <!-- Phone Mockup 9:16 -->
+                <div class="vertical-mockup" id="vertical-mockup">
+                  <img id="vertical-mockup-frame" class="vertical-mockup-bg" alt="Frame do vídeo">
+                  <div class="vertical-mockup-overlay"></div>
+                  <div class="vertical-safe-guide" id="vertical-safe-guide" title="Área Segura para Shorts/TikTok/Reels"></div>
+                  
+                  <div class="vertical-mockup-caption-wrap" id="vertical-mockup-caption-wrap" style="top: 65%;">
+                    <div class="vertical-mockup-caption-text" id="vertical-mockup-text">
+                      A pipeline <span class="active-word" id="vertical-mockup-active">Shorts</span> é muito rápida!
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Controls & Heights -->
+                <div class="vertical-preview-controls">
+                  <div class="field">
+                    <label for="vertical-y" style="display:flex; justify-content:space-between;">
+                      <span>Altura da Legenda (Posição Y):</span>
+                      <strong id="vertical-y-display" style="color:var(--accent);">65%</strong>
+                    </label>
+                    <input type="range" min="10" max="90" value="65" id="vertical-y" class="inp" style="margin-top:8px;">
+                    <input type="hidden" id="vertical-y-value" value="65">
+                  </div>
+
+                  <div class="field">
+                    <label style="font-size:12px; margin-bottom:6px; display:block;">Posições Rápidas Pré-definidas:</label>
+                    <div class="height-presets">
+                      <button type="button" class="height-preset-btn" data-y="25">⬆️ Topo (25%)</button>
+                      <button type="button" class="height-preset-btn" data-y="50">↔️ Centro (50%)</button>
+                      <button type="button" class="height-preset-btn" data-y="65">🎯 Padrão Shorts (65%)</button>
+                      <button type="button" class="height-preset-btn" data-y="78">⬇️ Inferior (78%)</button>
+                    </div>
+                  </div>
+
+                  <!-- Direct Caption Customization (synced with Estilo & Design) -->
+                  <div class="field" style="margin-top:4px;">
+                    <label for="vertical-font-size" style="display:flex; justify-content:space-between;">
+                      <span>Tamanho da Fonte:</span>
+                      <strong id="vertical-font-size-display" style="color:var(--accent);">120px</strong>
+                    </label>
+                    <input type="range" min="40" max="200" step="2" value="120" id="vertical-font-size" class="inp" style="margin-top:6px;">
+                  </div>
+
+                  <div class="field" style="margin-top:2px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                      <input type="checkbox" id="vertical-uppercase">
+                      <span style="font-size:13px; font-weight:600;">Forçar Letras Maiúsculas (UPPERCASE)</span>
+                    </label>
+                    <small style="color:var(--text3); display:block; margin-top:2px;">
+                      Converte todas as palavras automaticamente para CAIXA ALTA no vídeo final.
+                    </small>
+                  </div>
+
+                  <div class="field" style="margin-top:2px; display:flex; justify-content:space-between; align-items:center;">
+                    <label for="vertical-max-words" style="margin:0; font-size:12px; font-weight:600;">Palavras por Legenda:</label>
+                    <select id="vertical-max-words" class="inp" style="width:110px; padding:4px 8px; font-size:12px;">
+                      <option value="1">1 palavra</option>
+                      <option value="2" selected>2 palavras</option>
+                      <option value="3">3 palavras</option>
+                      <option value="4">4 palavras</option>
+                      <option value="6">6 palavras</option>
+                    </select>
+                  </div>
+
+                  <div class="field" style="margin-top:8px;">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-frame" style="width:100%;">
+                      🔄 Recarregar Frame (+3s no vídeo)
+                    </button>
+                    <small style="color:var(--text3); display:block; margin-top:4px;">
+                      Extrai um frame representativo para você verificar o contraste e posicionamento sobre o conteúdo real.
+                    </small>
+                  </div>
+
+                  <div class="field" style="margin-top:4px; padding:10px; background:var(--bg2); border-radius:8px; border:1px solid var(--border);">
+                    <div style="font-size:12px; font-weight:600; color:var(--text2); margin-bottom:4px;">Estilo Ativo:</div>
+                    <div id="vertical-style-summary" style="font-size:11px; color:var(--text3); line-height:1.4;">
+                      Carregando estilo...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="vertical-run" style="font-size:15px; padding:12px 24px;">
+              🔥 Somente Adicionar Legendas
+            </button>
+          </form>
+
+          <p id="vertical-message" role="status" style="margin-top:14px; font-weight:500;"></p>
+          <div id="vertical-result" hidden style="margin-top:18px;">
+            <video id="vertical-preview" controls style="max-width:320px;max-height:560px; border-radius:12px; box-shadow: 0 8px 24px rgba(0,0,0,0.6);"></video>
+            <p style="margin-top:10px;"><a id="vertical-download" download class="btn btn-secondary btn-sm">Baixar MP4</a> · <a id="vertical-ass" download>ASS</a> · <a id="vertical-srt" download>SRT</a> · <a id="vertical-command" target="_blank">Comando FFmpeg</a></p>
+          </div>
+        </div>
+        <!-- PANEL: RUN -->
+        <div class="panel active" id="panel-run">
+          <div class="section-header">
+            <div>
+              <h2>Nova Execução</h2>
+              <p>Baixa um vídeo, transcreve, seleciona cortes e renderiza clipes verticais.</p>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-title"><span>🔗</span> Origem do Vídeo</div>
+
+            <!-- Source Mode Selector -->
+            <div class="seg-group" id="run-source-mode-group" role="group" aria-label="Modo de origem" style="margin-bottom:20px;">
+              <button class="seg-btn active" id="run-srcmode-url" data-srcmode="url" type="button">
+                <span class="seg-icon">🔗</span>
+                <span class="seg-label">URL do YouTube</span>
+                <span class="seg-desc">Baixa o vídeo agora</span>
+              </button>
+              <button class="seg-btn" id="run-srcmode-local" data-srcmode="local" type="button">
+                <span class="seg-icon">📂</span>
+                <span class="seg-label">Vídeo Local</span>
+                <span class="seg-desc">Usar vídeo já baixado</span>
+              </button>
+            </div>
+
+            <!-- Section: URL Mode -->
+            <div id="run-src-url-section">
+              <div class="form-grid">
+                <div class="field" style="grid-column: 1 / -1;">
+                  <label>URL do YouTube</label>
+                  <input type="text" id="run-url" class="inp" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+                <div class="field">
+                  <label>Slug customizado</label>
+                  <input type="text" id="run-slug" class="inp" placeholder="(Opcional)">
+                </div>
+                <div class="field">
+                  <label>Intervalo específico (segundos ou HH:MM:SS)</label>
+                  <input type="text" id="run-moment" class="inp" placeholder="Ex: 30-90 ou 00:01:00-00:02:00">
+                </div>
+                <div class="field">
+                  <label>Transcript JSON (Opcional)</label>
+                  <input type="text" id="run-transcript" class="inp" placeholder="Caminho para arquivo .json existente">
+                </div>
+              </div>
+            </div>
+
+            <!-- Section: Local Video Mode -->
+            <div id="run-src-local-section" style="display:none;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-size:12px; color:var(--text3);">Selecione um vídeo de <code style="background:var(--bg1);padding:2px 6px;border-radius:4px;">data/downloads/</code></div>
+                <button class="btn btn-secondary btn-sm" id="btn-refresh-downloads" type="button">🔄 Atualizar</button>
+              </div>
+
+              <!-- Selected video info badge -->
+              <div id="run-local-selected-info" style="display:none; margin-bottom:12px; padding:10px 14px; background:var(--bg1); border:1px solid var(--accent); border-radius:10px; display:flex; align-items:center; gap:12px;">
+                <div style="font-size:22px;">🎬</div>
+                <div style="flex:1; min-width:0;">
+                  <div id="run-local-selected-name" style="font-weight:600; font-size:13px; color:var(--text1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+                  <div id="run-local-selected-meta" style="font-size:11px; color:var(--text3); margin-top:2px;"></div>
+                </div>
+                <div id="run-local-audio-badge" style="font-size:11px; padding:3px 8px; border-radius:12px; font-weight:600; white-space:nowrap;"></div>
+              </div>
+
+              <!-- Video list -->
+              <div id="run-downloads-list" style="max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:10px; background:var(--bg1);">
+                <div class="empty-state" style="padding:24px;">Carregando...</div>
+              </div>
+
+              <!-- Hidden inputs for local mode -->
+              <input type="hidden" id="run-local-video-path">
+              <input type="hidden" id="run-local-audio-path">
+              <input type="hidden" id="run-local-stem">
+
+              <!-- Slug override for local mode -->
+              <div class="form-grid" style="margin-top:14px;">
+                <div class="field">
+                  <label>Slug customizado (opcional — padrão: nome do arquivo)</label>
+                  <input type="text" id="run-slug-local" class="inp" placeholder="(deixe vazio para usar nome do arquivo)">
+                </div>
+                <div class="field">
+                  <label>Intervalo específico (segundos ou HH:MM:SS)</label>
+                  <input type="text" id="run-moment-local" class="inp" placeholder="Ex: 30-90 ou 00:01:00-00:02:00">
+                </div>
+              </div>
+
+              <div id="run-local-no-audio-warn" style="display:none; margin-top:10px;">
+                <div class="info-banner" style="background:rgba(255,180,0,0.08); border:1px solid rgba(255,180,0,0.3);">
+                  <span class="info-icon">⚠️</span>
+                  <span>Nenhum áudio extraído encontrado para este vídeo. O pipeline irá extrair o áudio automaticamente antes de transcrever.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="card">
+            <div class="card-title"><span>⚙️</span> Opções Básicas</div>
+            <div class="form-grid cols-3">
+              <div class="field">
+                <label>Idioma (Whisper)</label>
+                <select id="run-lang" class="inp">
+                  <option value="">Auto (Do .env)</option>
+                  <option value="pt">Português (pt)</option>
+                  <option value="en">Inglês (en)</option>
+                  <option value="es">Espanhol (es)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>IA de Curadoria (LLM)</label>
+                <select id="run-curator" class="inp">
+                  <option value="ollama" selected>Ollama local (sem custo de API)</option>
+                  <option value="">Usar configuração do .env</option>
+                  <option value="jev">Jev (TypeSafe AI - Curadoria Cognitiva 2 Camadas)</option>
+                  <option value="deepseek">DeepSeek (API, modelo do .env)</option>
+                  <option value="gemini">Gemini (API, modelo do .env)</option>
+                  <option value="auto">APIs com fallback (pode gerar cobrança)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>DeepSeek Reasoning Effort</label>
+                <select id="run-reasoning-effort" class="inp">
+                  <option value="75" selected>75 (Padrão / Recomendado)</option>
+                  <option value="50">50 (Rápido / Econômico)</option>
+                  <option value="100">100 (Profundo / Máximo)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Perfil da Pipeline</label>
+                <select id="run-profile" class="inp">
+                  <option value="">Auto (Do .env)</option>
+                  <option value="3" selected>3 (VRAM Otimizado / Modular)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Formato Áudio</label>
+                <select id="run-audiofmt" class="inp">
+                  <option value="wav">WAV</option>
+                  <option value="mp3">MP3</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Extensão de Vídeo</label>
+                <select id="run-videoext" class="inp">
+                  <option value="mp4" selected>.mp4 (Padrão)</option>
+                  <option value="mov">.mov (QuickTime)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="sep" style="margin: 20px 0;"></div>
+            
+            <div class="form-grid cols-3">
+              <div class="field">
+                <label>Qtd Máx Cortes</label>
+                <input type="number" id="run-maxclips" class="inp" placeholder="Padrão .env">
+              </div>
+              <div class="field">
+                <label>Duração Mínima (s)</label>
+                <input type="number" id="run-minsec" class="inp" placeholder="Padrão .env">
+              </div>
+              <div class="field">
+                <label>Duração Máxima (s)</label>
+                <input type="number" id="run-maxsec" class="inp" placeholder="Padrão .env">
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>🔍</span> Upscaling (Opcional)</div>
+            <div class="toggles-grid">
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Habilitar AI Upscale</div>
+                  <div class="td">Aumenta a resolução após a renderização</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-upscale"><div class="slider"></div></div>
+              </label>
+            </div>
+            <div class="form-grid cols-3" id="run-upscale-options" style="display:none; margin-top:15px;">
+              <div class="field">
+                <label>Escala</label>
+                <select id="run-upscale-scale" class="inp">
+                  <option value="2">2x</option>
+                  <option value="3">3x</option>
+                  <option value="4">4x</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Modelo Facial</label>
+                <select id="run-upscale-face" class="inp">
+                  <option value="gfpgan">GFPGAN</option>
+                  <option value="codeformer">CodeFormer</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Fidelidade CodeFormer</label>
+                <input type="number" id="run-upscale-fidelity" class="inp" step="0.1" min="0" max="1" placeholder="0.75">
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><span>🔧</span> Flags Extras</div>
+            <div class="toggles-grid">
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Dry-run</div>
+                  <div class="td">Executa até gerar o JSON, mas não renderiza os vídeos</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-dryrun"><div class="slider"></div></div>
+              </label>
+              
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Cinematic Zoom</div>
+                  <div class="td">Aplica zoom dinâmico e suave (post-processing)</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-cinematic"><div class="slider"></div></div>
+              </label>
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Verbose</div>
+                  <div class="td">Mostra logs detalhados (DEBUG)</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-verbose"><div class="slider"></div></div>
+              </label>
+
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Legendas Separadas</div>
+                  <div class="td">Exporta apenas a legenda (.mov transparente) ao invés de embutir</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-sepsub"><div class="slider"></div></div>
+              </label>
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">B-rolls e SFX (Cortes Manuais)</div>
+                  <div class="td">Força a IA a criar b-rolls e efeitos em cortes de momento específico</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-enrich-effects"><div class="slider"></div></div>
+              </label>
+
+               <label class="toggle-row" id="run-download-original-row">
+                <div class="toggle-info">
+                  <div class="tl">Baixar Vídeo Original</div>
+                  <div class="td">Baixa só o MP4 do YouTube e encerra a execução sem continuar a pipeline</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-download-original"><div class="slider"></div></div>
+              </label>
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Preset DaVinci Resolve</div>
+                  <div class="td">Gera .mov compatível (DNxHR HQ + PCM)</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-davinci"><div class="slider"></div></div>
+              </label>
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Jev HTTP Range</div>
+                  <div class="td">Baixa apenas trechos dos cortes virais via HTTP Range (yt-dlp) sem baixar o vídeo inteiro</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-http-range"><div class="slider"></div></div>
+              </label>
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Jev Triagem Semântica</div>
+                  <div class="td">Usa Jev System One para triagem de pares na montagem narrativa</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="run-jev-triage"><div class="slider"></div></div>
+              </label>
+            </div>
+          </div>
+
+          <div class="run-strip">
+            <button class="btn btn-primary btn-lg" id="btn-run-pipeline">▶ EXECUTAR PIPELINE</button>
+          </div>
+        </div>
+
+        <!-- PANEL: RERENDER -->
+        <div class="panel" id="panel-rerender">
+          <div class="section-header">
+            <div>
+              <h2>Re-Render</h2>
+              <p>Renderiza novamente um clipe existente com novas opções de tracking ou legendas atualizadas.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>📁</span> Arquivos Alvo</div>
+            <div class="form-grid">
+               <div class="field">
+                <label>Clipe Alvo (--clipe)</label>
+                <select id="rr-clip" class="inp"></select>
+                <div class="hint">Escolha o clipe na pasta data/clips/</div>
+              </div>
+              <div class="field">
+                <label>Legenda Alvo (--subtitles)</label>
+                <select id="rr-subs" class="inp"></select>
+                <div class="hint">Escolha o arquivo .ass em data/subtitles/</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTITLE OUTPUT MODE -->
+          <div class="card">
+            <div class="card-title"><span>💬</span> Modo de Saída da Legenda</div>
+            <p style="color:var(--text3); font-size:12px; margin-bottom:16px;">Define como as legendas serão exportadas no re-render. O modo overlay gera um arquivo <code style="background:var(--bg1);padding:1px 5px;border-radius:4px;font-size:11px;">.overlay.mov</code> com fundo transparente para composição em ferramentas de edição.</p>
+            <div class="seg-group" id="rr-sub-mode-group" role="group" aria-label="Modo de legenda">
+              <button class="seg-btn active" id="rr-submode-burnin" data-mode="burnin" type="button">
+                <span class="seg-icon">🔥</span>
+                <span class="seg-label">Burn-in</span>
+                <span class="seg-desc">Legenda embutida no vídeo</span>
+              </button>
+              <button class="seg-btn" id="rr-submode-overlay" data-mode="overlay" type="button">
+                <span class="seg-icon">🎭</span>
+                <span class="seg-label">Overlay .mov</span>
+                <span class="seg-desc">Exporta .mov transparente separado</span>
+              </button>
+              <button class="seg-btn" id="rr-submode-both" data-mode="both" type="button">
+                <span class="seg-icon">⚡</span>
+                <span class="seg-label">Ambos</span>
+                <span class="seg-desc">Burn-in + overlay separado</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- SILENCE REMOVAL -->
+          <div class="card">
+            <div class="card-title"><span>✂️</span> Remoção de Silêncio</div>
+            <div class="toggles-grid" style="margin-bottom:0;">
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Remover Silêncio (Jump Cuts)</div>
+                  <div class="td">Corta trechos silenciosos do vídeo. Quando ativado, a legenda é automaticamente re-sincronizada aos novos tempos para evitar dessincronização.</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="rr-jumps"><div class="slider"></div></div>
+              </label>
+            </div>
+            <div class="rr-silence-info" id="rr-silence-info" style="display:none;">
+              <div class="info-banner">
+                <span class="info-icon">ℹ️</span>
+                <span>O pipeline irá detectar pausas e remover automaticamente os trechos silenciosos, re-mapeando os timestamps da legenda <strong>.ass</strong> para que permaneça sincronizada com o vídeo cortado.</span>
+              </div>
+            </div>
+          </div>
+
+           <div class="card">
+            <div class="card-title"><span>🎥</span> Tracking e Layout</div>
+            <div class="toggles-grid" style="margin-bottom:14px;">
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Forçar Re-tracking</div>
+                  <div class="td">Ignora crop.json salvo e calcula tracking novamente</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="rr-retrack"><div class="slider"></div></div>
+              </label>
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Cinematic Zoom</div>
+                  <div class="td">Aplica zoom dinâmico e suave pós-renderização</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="rr-cinematic"><div class="slider"></div></div>
+              </label>
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Full-Frame (Sem Crop)</div>
+                  <div class="td">Renderiza o vídeo inteiro reduzido</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="rr-fullframe"><div class="slider"></div></div>
+              </label>
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Preset DaVinci Resolve</div>
+                  <div class="td">Gera .mov compatível (DNxHR HQ + PCM)</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="rr-davinci"><div class="slider"></div></div>
+              </label>
+            </div>
+
+            <div class="form-grid cols-3">
+               <div class="field">
+                <label>Extensão de Vídeo</label>
+                <select id="rr-videoext" class="inp">
+                  <option value="mp4" selected>.mp4 (Padrão)</option>
+                  <option value="mov">.mov (QuickTime)</option>
+                </select>
+              </div>
+               <div class="field">
+                <label>Duo Disable Windows</label>
+                <input type="text" id="rr-duodis" class="inp" placeholder="Ex: 13-14,17-19">
+              </div>
+              <div class="field">
+                <label>Single Disable Windows</label>
+                <input type="text" id="rr-singledis" class="inp" placeholder="Ex: 20-25">
+              </div>
+              <div class="field">
+                <label>Focus Fix Windows</label>
+                <input type="text" id="rr-focwin" class="inp" placeholder="Ex: 30-33">
+              </div>
+            </div>
+          </div>
+
+          <div class="run-strip">
+            <button class="btn btn-secondary btn-lg" id="btn-run-rerender">🔁 INICIAR RE-RENDER</button>
+          </div>
+        </div>
+
+        <!-- PANEL: AUDIO DOWNLOAD -->
+        <div class="panel" id="panel-audio-dl">
+          <div class="section-header">
+            <div>
+              <h2>Download de Áudio do YouTube</h2>
+              <p>Insira a URL de um vídeo do YouTube e baixe apenas o áudio no formato desejado.</p>
+            </div>
+          </div>
+
+          <!-- URL -->
+          <div class="card">
+            <div class="card-title"><span>🔗</span> Origem</div>
+            <div class="form-grid">
+              <div class="field" style="grid-column: 1 / -1;">
+                <label>URL do YouTube</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="text" id="adl-url" class="inp" placeholder="https://www.youtube.com/watch?v=..." style="flex:1;">
+                  <button class="btn btn-secondary" id="btn-adl-fetch-info" type="button">🔍 Verificar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Video info preview -->
+            <div id="adl-info-card" style="display:none; margin-top:14px; padding:14px 16px; background:var(--bg1); border-radius:10px; border:1px solid var(--border); display:flex; gap:14px; align-items:center;">
+              <div style="font-size:28px;">🎬</div>
+              <div style="flex:1; min-width:0;">
+                <div id="adl-info-title" style="font-weight:600; font-size:14px; color:var(--text1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+                <div id="adl-info-meta" style="font-size:12px; color:var(--text3); margin-top:3px;"></div>
+              </div>
+              <div id="adl-info-badge" style="padding:4px 10px; background:var(--accent); color:#fff; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap;"></div>
+            </div>
+          </div>
+
+          <!-- Options -->
+          <div class="card">
+            <div class="card-title"><span>⚙️</span> Opções de Exportação</div>
+            <div class="form-grid cols-3">
+              <div class="field">
+                <label>Formato de Saída</label>
+                <select id="adl-format" class="inp">
+                  <option value="mp3">MP3 — Alta compatibilidade</option>
+                  <option value="wav">WAV — Sem perdas (Whisper)</option>
+                  <option value="ogg">OGG — Código aberto</option>
+                  <option value="m4a">M4A — AAC nativo</option>
+                  <option value="flac">FLAC — Sem perdas comprimido</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Qualidade / Bitrate (MP3)</label>
+                <select id="adl-quality" class="inp">
+                  <option value="320">320 kbps — Máxima</option>
+                  <option value="192" selected>192 kbps — Alta</option>
+                  <option value="128">128 kbps — Padrão</option>
+                  <option value="96">96 kbps — Econômica</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Nome do Arquivo (slug)</label>
+                <input type="text" id="adl-slug" class="inp" placeholder="(gerado automaticamente)">
+              </div>
+            </div>
+
+            <div class="sep" style="margin:18px 0;"></div>
+
+            <div class="toggles-grid">
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Normalizar Volume</div>
+                  <div class="td">Aplica filtro loudnorm para nivelar o áudio (recomendado para podcasts)</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="adl-normalize"><div class="slider"></div></div>
+              </label>
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Mono (1 canal)</div>
+                  <div class="td">Converte para canal único — ideal para transcrição com Whisper</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="adl-mono" checked><div class="slider"></div></div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Output location -->
+          <div class="card">
+            <div class="card-title"><span>📁</span> Destino</div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="flex:1; background:var(--bg1); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:13px; color:var(--text3); font-family:monospace;" id="adl-dest-path">data/audio/</div>
+              <div style="font-size:12px; color:var(--text3);">↑ pasta padrão do projeto</div>
+            </div>
+          </div>
+
+          <!-- Downloaded files list -->
+          <div class="card" id="adl-results-card" style="display:none;">
+            <div class="card-title"><span>✅</span> Arquivos Baixados</div>
+            <div id="adl-results-list"></div>
+          </div>
+
+          <div class="run-strip">
+            <button class="btn btn-primary btn-lg" id="btn-adl-download" type="button">🎵 BAIXAR ÁUDIO</button>
+          </div>
+        </div>
+
+        <!-- PANEL: SUBTITLES -->
+        <div class="panel" id="panel-subtitles">
+           <div class="section-header">
+            <div>
+              <h2>Editor de Legendas (.ass)</h2>
+              <p>Edite os textos das legendas mantendo o tempo exato, e gere o vídeo overlay de correção.</p>
+            </div>
+          </div>
+
+          <div class="card" style="display: flex; gap: 10px; align-items: flex-end;">
+             <div class="field" style="flex:1;">
+                <label>Arquivo de Legenda (.ass)</label>
+                <select id="sub-file-select" class="inp"></select>
+             </div>
+             <button class="btn btn-secondary" id="btn-load-sub">Carregar Tabela</button>
+          </div>
+
+          <div class="card" id="sub-editor-wrap" style="display: none; padding: 0; overflow: hidden;">
+             <div id="sub-table-wrap" style="max-height: 50vh; overflow-y: auto; border:none; border-radius:0;">
+                <table id="sub-table">
+                   <thead>
+                     <tr>
+                       <th>#</th>
+                       <th>Início</th>
+                       <th>Fim</th>
+                       <th style="width: 100%;">Texto (Editável)</th>
+                     </tr>
+                   </thead>
+                   <tbody></tbody>
+                </table>
+             </div>
+             <div style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; background: var(--bg2);">
+                <button class="btn btn-primary" id="btn-save-sub">💾 Salvar Arquivo .ass</button>
+                <button class="btn btn-cyan" id="btn-overlay-fix">⚡ Executar Overlay Fix</button>
+             </div>
+          </div>
+        </div>
+
+         <!-- PANEL: CAPTIONS STYLING -->
+        <div class="panel" id="panel-captions">
+           <div class="section-header">
+            <div>
+              <h2>Estilo e Design das Legendas</h2>
+              <p>Configure a aparência das palavras geradas no vídeo.</p>
+            </div>
+          </div>
+
+          <div id="caption-preview">
+            <span id="preview-text">A pipeline <span id="preview-active">Shorts</span> é muito rápida!</span>
+          </div>
+
+          <div class="card">
+             <div class="form-grid">
+               <div class="field">
+                 <label>Fonte Principal (Precisa estar instalada no OS)</label>
+                 <input type="text" id="cap-font" class="inp">
+               </div>
+               <div class="field">
+                 <label>Posição Vertical</label>
+                 <select id="cap-pos" class="inp">
+                   <option value="top">Top</option>
+                   <option value="center">Center</option>
+                   <option value="bottom">Bottom</option>
+                 </select>
+               </div>
+             </div>
+
+             <div class="sep" style="margin: 20px 0;"></div>
+
+             <div class="form-grid cols-3">
+               <div class="field">
+                 <label>Tamanho da Fonte</label>
+                 <div class="range-wrap">
+                   <input type="range" id="cap-size" min="40" max="200" value="64">
+                   <div class="range-val" id="cap-size-val">64</div>
+                 </div>
+               </div>
+                <div class="field">
+                 <label>Largura do Contorno (Stroke)</label>
+                 <div class="range-wrap">
+                   <input type="range" id="cap-strokew" min="0" max="15" value="3">
+                   <div class="range-val" id="cap-strokew-val">3</div>
+                 </div>
+               </div>
+               <div class="field">
+                 <label>Escala do Hook (1ª palavra)</label>
+                 <div class="range-wrap">
+                   <input type="range" id="cap-hookscale" min="100" max="250" value="155">
+                   <div class="range-val" id="cap-hookscale-val">155</div>
+                 </div>
+               </div>
+               <div class="field">
+                 <label>Neon Glow (Brilho Ativo)</label>
+                 <div class="range-wrap">
+                   <input type="range" id="cap-glowblur" min="0" max="8" step="0.1" value="1.2">
+                   <div class="range-val" id="cap-glowblur-val">1.2</div>
+                 </div>
+               </div>
+               <div class="field">
+                 <label>Palavras por Legenda</label>
+                 <div class="range-wrap">
+                   <input type="range" id="cap-maxwords" min="1" max="10" value="1">
+                   <div class="range-val" id="cap-maxwords-val">1</div>
+                 </div>
+               </div>
+               <div class="field">
+                 <label>Caracteres por Legenda</label>
+                 <div class="range-wrap">
+                   <input type="range" id="cap-maxchars" min="1" max="50" value="20">
+                   <div class="range-val" id="cap-maxchars-val">20</div>
+                 </div>
+               </div>
+               <div class="field">
+                 <label>Sombra das Letras</label>
+                 <div class="range-wrap">
+                   <input type="range" id="cap-shadow" min="0" max="5" step="0.1" value="0.8">
+                   <div class="range-val" id="cap-shadow-val">0.8</div>
+                 </div>
+               </div>
+             </div>
+
+             <div class="sep" style="margin: 20px 0;"></div>
+             <div class="form-grid cols-3">
+               
+               <div class="field">
+                 <label>Cor Texto Base</label>
+                 <div class="color-field">
+                   <input type="color" id="cap-color-picker">
+                   <input type="text" id="cap-color-hex" class="inp">
+                 </div>
+               </div>
+               
+               <div class="field">
+                 <label>Cor Palavra Ativa</label>
+                 <div class="color-field">
+                   <input type="color" id="cap-activecolor-picker">
+                   <input type="text" id="cap-activecolor-hex" class="inp">
+                 </div>
+               </div>
+
+                <div class="field">
+                 <label>Cor Contorno</label>
+                 <div class="color-field">
+                   <input type="color" id="cap-strokecolor-picker">
+                   <input type="text" id="cap-strokecolor-hex" class="inp">
+                 </div>
+               </div>
+
+                <div class="field">
+                 <label>Cor Hook (1ª Palavra)</label>
+                 <div class="color-field">
+                   <input type="color" id="cap-hookcolor-picker">
+                   <input type="text" id="cap-hookcolor-hex" class="inp">
+                 </div>
+               </div>
+
+               <div class="field">
+                 <label>Cor Keyword A</label>
+                 <div class="color-field">
+                   <input type="color" id="cap-kwa-picker">
+                   <input type="text" id="cap-kwa-hex" class="inp">
+                 </div>
+               </div>
+
+               <div class="field">
+                 <label>Cor Keyword B</label>
+                 <div class="color-field">
+                   <input type="color" id="cap-kwb-picker">
+                   <input type="text" id="cap-kwb-hex" class="inp">
+                 </div>
+               </div>
+             </div>
+
+             <div class="sep" style="margin: 20px 0;"></div>
+
+              <div class="toggles-grid">
+               <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Forçar Uppercase</div>
+                  <div class="td">Tudo em maiúsculo automaticamente</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="cap-upper"><div class="slider"></div></div>
+              </label>
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Embutir no Vídeo (Burn in)</div>
+                  <div class="td">O vídeo final já terá a legenda pintada</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="cap-burnin"><div class="slider"></div></div>
+              </label>
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <div class="tl">Exportar Transparente</div>
+                  <div class="td">Gera arquivo extra .overlay.mov</div>
+                </div>
+                <div class="switch"><input type="checkbox" id="cap-overlay"><div class="slider"></div></div>
+              </label>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary" id="btn-save-captions">💾 Salvar Alterações no .env</button>
+
+        </div>
+
+        <!-- PANEL: UPSCALE -->
+        <div class="panel" id="panel-upscale">
+           <div class="section-header">
+            <div>
+              <h2>Upscaling e Restauração Facial</h2>
+              <p>Aumente a resolução e melhore o rosto de vídeos borrados usando AI.</p>
+            </div>
+          </div>
+
+          <div class="card">
+             <div class="form-grid cols-3">
+               <div class="field">
+                  <label>Habilitar na Pipeline</label>
+                  <select id="up-enable" class="inp">
+                    <option value="false">Não</option>
+                    <option value="true">Sim</option>
+                  </select>
+               </div>
+                <div class="field">
+                  <label>Escala</label>
+                  <select id="up-scale" class="inp">
+                    <option value="2">2x</option>
+                    <option value="3">3x</option>
+                    <option value="4">4x</option>
+                  </select>
+               </div>
+               <div class="field">
+                  <label>Modelo Facial</label>
+                  <select id="up-facemodel" class="inp">
+                    <option value="gfpgan">GFPGAN</option>
+                    <option value="codeformer">CodeFormer</option>
+                  </select>
+               </div>
+             </div>
+             
+             <div class="sep" style="margin: 20px 0;"></div>
+
+              <div class="form-grid">
+               <div class="field">
+                 <label>CodeFormer Fidelidade (0.0 = Mais AI, 1.0 = Mais Real)</label>
+                 <div class="range-wrap">
+                   <input type="range" id="up-fidelity" min="0" max="1" step="0.05" value="0.75">
+                   <div class="range-val" id="up-fidelity-val">0.75</div>
+                 </div>
+               </div>
+             </div>
+          </div>
+
+          <div class="card">
+             <div class="card-title"><span>⚡</span> Execução Standalone</div>
+             <p style="color:var(--text3); font-size:12px; margin-bottom:14px;">Você pode rodar apenas a melhoria de rosto (sem upscaling do background) em um clipe que já foi renderizado. É muito mais rápido.</p>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label>Clipe Alvo para Face-Only CodeFormer</label>
+                  <select id="up-clip" class="inp"></select>
+                </div>
+              </div>
+              <div class="run-strip" style="margin-top:16px;">
+                <button class="btn btn-secondary" id="btn-run-upscale">🚀 RODAR FACE-ONLY NO CLIPE SELECIONADO</button>
+              </div>
+          </div>
+
+        </div>
+
+         <!-- PANEL: CONFIG -->
+        <div class="panel" id="panel-config">
+            <div class="section-header">
+            <div>
+              <h2>Configurações do Sistema (.env)</h2>
+              <p>Edite todas as variáveis do projeto. A interface atualizará os formulários visuais onde for aplicável.</p>
+            </div>
+            <div>
+               <button class="btn btn-primary" id="btn-save-env">💾 Salvar .env</button>
+            </div>
+          </div>
+
+          <textarea id="env-textarea"></textarea>
+        </div>
+
+        <!-- PANEL: CONVERTER -->
+        <div class="panel" id="panel-converter">
+          <div class="section-header">
+            <div>
+              <h2>Conversor de Mídia</h2>
+              <p>Converta arquivos de vídeo e áudio entre diferentes formatos.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>📂</span> Selecionar Arquivo</div>
+            <div class="form-grid">
+              <div class="field" style="grid-column: 1 / -1;">
+                <label>Caminho do arquivo (ou selecione no explorador abaixo)</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="text" id="conv-file-path" class="inp" placeholder="Ex: data/downloads/video.mp4" style="flex:1;">
+                  <button class="btn btn-secondary" id="btn-conv-refresh-files" type="button">🔄 Atualizar Listas</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-grid" style="margin-top:14px;">
+               <div class="field">
+                <label>Arquivos de Vídeo (data/downloads ou data/clips)</label>
+                <select id="conv-video-select" class="inp"></select>
+              </div>
+              <div class="field">
+                <label>Arquivos de Áudio (data/audio)</label>
+                <select id="conv-audio-select" class="inp"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><span>⚙️</span> Opções de Conversão</div>
+            <div class="form-grid cols-2">
+              <div class="field">
+                <label>Formato de Saída</label>
+                <select id="conv-format" class="inp">
+                  <optgroup label="Vídeo">
+                    <option value="mp4">.mp4 (H.264)</option>
+                    <option value="mov">.mov (QuickTime)</option>
+                    <option value="webm">.webm (VP9)</option>
+                    <option value="mkv">.mkv (Matroska)</option>
+                  </optgroup>
+                  <optgroup label="Áudio">
+                    <option value="mp3">.mp3 (MPEG Audio)</option>
+                    <option value="wav">.wav (PCM)</option>
+                    <option value="ogg">.ogg (Vorbis)</option>
+                    <option value="flac">.flac (FLAC)</option>
+                    <option value="m4a">.m4a (AAC)</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="field">
+                <label>Nome do Arquivo de Saída (Opcional)</label>
+                <input type="text" id="conv-output-name" class="inp" placeholder="(mesmo nome por padrão)">
+              </div>
+              <div class="field" style="display:flex; align-items:center; height:100%;">
+                <label class="toggle-row" style="margin-bottom:0; width:100%;">
+                  <div class="toggle-info">
+                    <div class="tl">Preset DaVinci</div>
+                    <div class="td">DNxHR + PCM</div>
+                  </div>
+                  <div class="switch"><input type="checkbox" id="conv-davinci"><div class="slider"></div></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="run-strip">
+            <button class="btn btn-primary btn-lg" id="btn-run-converter" type="button">🔄 CONVERTER AGORA</button>
+          </div>
+        </div>
+
+        <!-- PANEL: EXPLORER -->
+        <div class="panel" id="panel-explorer">
+           <div class="section-header">
+            <div>
+              <h2>Explorador</h2>
+              <p>Clipes e Legendas gerados na pasta data/</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="btn-refresh-exp">🔄 Atualizar</button>
+          </div>
+
+          <div class="form-grid">
+             <div class="card" style="padding:0; overflow:hidden;">
+               <div style="padding:12px 16px; background:var(--bg2); border-bottom:1px solid var(--border); font-weight:600; font-size:12px;">📁 data/clips/</div>
+               <div class="explorer-list" id="exp-clips-list" style="padding:8px; max-height:60vh; overflow-y:auto;"></div>
+             </div>
+             <div class="card" style="padding:0; overflow:hidden;">
+               <div style="padding:12px 16px; background:var(--bg2); border-bottom:1px solid var(--border); font-weight:600; font-size:12px;">📁 data/subtitles/</div>
+               <div class="explorer-list" id="exp-subs-list" style="padding:8px; max-height:60vh; overflow-y:auto;"></div>
+             </div>
+          </div>
+        </div>
+
+      </div> <!-- /content -->
+    </main>
+
+    <!-- CONSOLE PANEL -->
+    <div id="console-panel">
+      <div id="console-header">
+        <h3>📟 Console <div class="status-dot" id="console-pulse"></div></h3>
+        <div id="console-actions">
+          <button class="btn btn-secondary btn-sm" id="btn-console-copy">📋 Copiar</button>
+          <button class="btn btn-secondary btn-sm" id="btn-console-clear">🗑️ Limpar</button>
+          <button class="btn btn-danger btn-sm" id="btn-console-cancel" style="display:none;">⛔ Cancelar Processo</button>
+          <button class="btn btn-secondary btn-sm" id="btn-console-close">✕ Fechar</button>
+        </div>
+      </div>
+      <div id="console-body"></div>
+    </div>
+    
+  </div> <!-- /shell -->
+
+  <div id="toast">Operação realizada com sucesso</div>
+
+  <script src="app.js"></script>
+  <script src="vertical.js"></script>
+  <script src="virality.js"></script>
+</body>
+</html>
